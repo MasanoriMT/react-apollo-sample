@@ -50,7 +50,13 @@ const Repository = (props) => {
 }
 
 class Repositories extends Component {
+  constructor(props) {
+    super(props)
+    console.log("Repositories constructor")
+  }
+
   render() {
+    console.log("Repositories render")
     let repos = []
     let h1Text = `Searching For ${this.props.query} ...`
     if (this.props.data && this.props.data.search) {
@@ -73,30 +79,32 @@ class Repositories extends Component {
   }
 }
 
+const RepositoriesWithQuery = graphql(RepositorySearchQuery, {
+  options: (props) => ({
+    variables: {
+      q: props.query,
+    },
+  }),
+  skip: (ownProps) => !ownProps.query,
+})(Repositories)
+
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
       q: '',
-      repositories: <div></div>
+      keyword: '',
     }
   }
 
   handleFormSubmit(evnt) {
     evnt.preventDefault()
 
-    const RepositoriesWithQuery = graphql(RepositorySearchQuery, {
-      options: {variables: { q: this.state.q }}
-    })(Repositories)
-
-    this.setState({
-      repositories: <RepositoriesWithQuery query={this.state.q} />
-    })
-
+    this.setState({q: this.state.keyword})
   }
 
   handleTextChange(evnt) {
-    this.setState({q: evnt.target.value})
+    this.setState({keyword: evnt.target.value})
   }
 
   render() {
@@ -104,7 +112,7 @@ class App extends Component {
       <div>
         <SearchForm onSubmit={evnt => this.handleFormSubmit(evnt)} onChange={evnt => this.handleTextChange(evnt)} />
         <ApolloProvider client={client}>
-          {this.state.repositories}
+          <RepositoriesWithQuery query={this.state.q} />
         </ApolloProvider>
       </div>
     )
