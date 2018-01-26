@@ -1,20 +1,21 @@
-const webpack = require('webpack');
-
 module.exports = {
-  entry: './src/app.js',
+  entry: './src/index.jsx',
   output: {
-   path: 'dist/',
-   filename: 'bundle.js'
+    path: 'dist/',
+    filename: 'bundle.js'
   },
   devtool: 'source-map',
   module: {
     loaders: [
       {
-        test: /.jsx?$/,
+        test: /\.jsx?$/,
         loader: 'babel',
         exclude: /node_modules/
       }
     ]
+  },
+  resolve: {
+    extensions: ['', '.js', '.jsx'],
   },
   eslint: {
     configFile: './.eslintrc.json'
