@@ -1,29 +1,32 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import ApolloClient, { createNetworkInterface } from 'apollo-client'
+import { ApolloClient, InMemoryCache } from 'apollo-client-preset'
+import { ApolloLink } from 'apollo-link'
+import { createHttpLink } from 'apollo-link-http'
 import { ApolloProvider } from 'react-apollo'
 import { githubToken } from './config.secret'
 
 import App from './components/App'
 
-const networkInterface = createNetworkInterface({ uri: 'https://api.github.com/graphql' })
-networkInterface.use([{
-  applyMiddleware(req, next) {
-    if (!req.options.headers) {
-      req.options.headers = {}
+const httpLink = createHttpLink({ uri: 'https://api.github.com/graphql' })
+const middlewareLink = new ApolloLink((operation, forward) => {
+  operation.setContext({
+    headers: {
+      authorization: `bearer ${githubToken}`
     }
-    req.options.headers.authorization = `bearer ${githubToken}`
-    next()
-  }
-}])
+  })
+  return forward(operation)
+})
 
+const link = middlewareLink.concat(httpLink)
 const client = new ApolloClient({
-  networkInterface: networkInterface,
+  link,
+  cache: new InMemoryCache(),
 })
 
 ReactDOM.render(
   <ApolloProvider client={client}>
     <App />
   </ApolloProvider>,
-  document.getElementById('app')
+  document.querySelector('#app')
 )

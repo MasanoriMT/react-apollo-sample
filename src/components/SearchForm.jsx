@@ -4,8 +4,8 @@ import React from 'react'
 const SearchForm = (props) => {
   return (
     <form onSubmit={props.onSubmit}>
-    <input type='text' onChange={props.onChange} />
-    <input type='submit' />
+      <input type='text' onChange={props.onChange} />
+      <input type='submit' />
     </form>
   )
 }
