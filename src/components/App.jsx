@@ -1,35 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { connect } from 'react-redux'
 
 import SearchForm from './SearchForm'
 import RepositoriesWithQuery from './Repositories'
 
-class App extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      q: '',
-      keyword: '',
-    }
-  }
+const App = ({ searchKeyword }) => 
+  (
+    <div>
+      <SearchForm />
+      <RepositoriesWithQuery keyword={searchKeyword} />
+    </div>
+  )
 
-  handleFormSubmit(evnt) {
-    evnt.preventDefault()
-
-    this.setState({q: this.state.keyword})
-  }
-
-  handleTextChange(evnt) {
-    this.setState({keyword: evnt.target.value})
-  }
-
-  render() {
-    return (
-      <div>
-        <SearchForm onSubmit={evnt => this.handleFormSubmit(evnt)} onChange={evnt => this.handleTextChange(evnt)} />
-        <RepositoriesWithQuery query={this.state.q} />
-      </div>
-    )
-  }
-}
-
-export default App
+export default connect(state => ({ searchKeyword: state.searchKeyword }))(App)

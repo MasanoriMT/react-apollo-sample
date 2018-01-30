@@ -11,9 +11,9 @@ class Repositories extends Component {
 
   render() {
     let repos = []
-    let h1Text = `Searching For ${this.props.query} ...`
+    let h1Text = `Searching For ${this.props.keyword} ...`
     if (this.props.data && this.props.data.search) {
-      h1Text = `Repositories about ${this.props.query} are`
+      h1Text = `Repositories about ${this.props.keyword} are`
       repos = this.props.data.search.edges.map(edge => ({
         key: edge.node.id,
         name: edge.node.name,
@@ -35,8 +35,8 @@ class Repositories extends Component {
 export default graphql(GetRepositories, {
   options: (props) => ({
     variables: {
-      q: props.query,
+      q: props.keyword,
     },
   }),
-  skip: (ownProps) => !ownProps.query,
+  skip: (ownProps) => !ownProps.keyword,
 })(Repositories)
